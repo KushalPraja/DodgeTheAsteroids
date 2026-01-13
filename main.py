@@ -11,7 +11,6 @@ def main():
     screen = pygame.display.set_mode((SCREEN_LENGTH, SCREEN_HEIGHT))
     clock = pygame.time.Clock()
     pygame.display.set_caption("Dodge the Asteroids")
-
     running = True
     while running:
         startscreen.draw_start_screen(screen)
@@ -53,6 +52,15 @@ def main_game(screen, clock):
 
         text_surface = font.render(f"Score: {score}", True, (255, 255, 255))
         text_rect = text_surface.get_rect(topleft=(10, 10))
+
+        # every 300 milliseconds, add another asteroid  and increase score
+        if pygame.time.get_ticks() % 300 == 0:
+            score += 1
+            x_pos = randint(0, SCREEN_LENGTH)
+            y_pos = 0
+            speed = uniform(4.0, 6.0)
+            size = randint(20,50)
+            asteroid = Asteroid(all_sprites, pos_x=x_pos, pos_y=y_pos, speed=speed, size=size)
 
         for asteroid in all_sprites:
             if isinstance(asteroid, Asteroid):

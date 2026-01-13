@@ -7,9 +7,9 @@ FPS = 60
 FONT_PATH = "fonts/Comfortaa-Medium.ttf"
 
 
-def load_font():
+def load_font(font_size = 24):
     try:
-        font = pygame.font.Font(FONT_PATH, 24)
+        font = pygame.font.Font(FONT_PATH, font_size)
         return font
     except Exception as e:
         print(f"Error loading font: {e}")

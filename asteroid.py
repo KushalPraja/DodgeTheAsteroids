@@ -2,6 +2,8 @@ import pygame
 import assets
 import config
 import random
+
+
 class Asteroid(pygame.sprite.Sprite):
     def __init__(self, all_sprites, pos_x, pos_y, speed, size):
         pygame.sprite.Sprite.__init__(self, all_sprites)
@@ -20,11 +22,15 @@ class Asteroid(pygame.sprite.Sprite):
             self.rect.y = 0
             self.rect.x = random.randint(0, config.SCREEN_LENGTH)
             self.speed = random.uniform(4.0, 6.0)
+            self.size = random.randint(20, 50)
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+            self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
 
         if self.rect.left > config.SCREEN_LENGTH or self.rect.right < 0:
             self.rect.y = 0
             self.rect.x = random.randint(0, config.SCREEN_LENGTH)
             self.speed = random.uniform(4.0, 6.0)  
-        
-        
+            self.size = random.randint(20, 50)
+            self.image = pygame.transform.scale(self.image, (self.size, self.size))
+            self.rect = self.image.get_rect(topleft=(self.rect.x, self.rect.y))
 

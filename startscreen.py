@@ -4,12 +4,12 @@ from config import load_font
 
 def draw_start_screen(screen):
     screen.fill((0, 0, 0))
-    font = load_font()
+    font = load_font(48)
     title_surface = font.render("Dodge the Asteroids!", True, (255, 255, 255))
     title_rect = title_surface.get_rect(center=(400, 150))
     screen.blit(title_surface, title_rect)
 
-    button_font = load_font()
+    button_font = load_font(20)
     start_button = Button(
         x=300,
         y=300,
