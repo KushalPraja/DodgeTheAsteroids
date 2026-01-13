@@ -1,0 +1,9 @@
+[project]
+name = "dodge-game"
+version = "0.1.0"
+description = "A simple dodge the asteroids game built with Pygame."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pygame>=2.6.1",
+]
