@@ -3,6 +3,7 @@ from config import load_font, SCREEN_LENGTH, SCREEN_HEIGHT, FPS
 from spaceship import Spaceship
 from asteroid import Asteroid
 from random import randint, uniform
+from cooldown_bar import draw_cooldown_bar
 import startscreen
 import endscreen
 
@@ -12,17 +13,21 @@ def main():
     clock = pygame.time.Clock()
     pygame.display.set_caption("Dodge the Asteroids")
     running = True
+    restart = False
     while running:
-        startscreen.draw_start_screen(screen)
+        if not restart:
+            startscreen.draw_start_screen(screen)
         action = main_game(screen, clock)
         if action == "quit":
             running = False
+        elif action == "restart":
+            restart = True
 
     pygame.quit()
 
 def main_game(screen, clock):
     try:
-        font = load_font()
+        font = load_font(20)
     
     except Exception as e:
         print(f"Error loading font: {e}")
@@ -48,10 +53,15 @@ def main_game(screen, clock):
             if event.type == pygame.QUIT:
                 running = False
 
+
         all_sprites.update()
 
         text_surface = font.render(f"Score: {score}", True, (255, 255, 255))
         text_rect = text_surface.get_rect(topleft=(10, 10))
+
+        # fps
+        text_surface_fps = font.render(f"FPS: {int(clock.get_fps())}", True, (255, 255, 255))
+        text_rect_fps = text_surface_fps.get_rect(topright=(SCREEN_LENGTH - 10, 10))
 
         # every 300 milliseconds, add another asteroid  and increase score
         if pygame.time.get_ticks() % 300 == 0:
@@ -72,10 +82,22 @@ def main_game(screen, clock):
 
         screen.fill("#010101")
         screen.blit(text_surface, text_rect)
+        screen.blit(text_surface_fps, text_rect_fps)
         all_sprites.draw(screen)
+
+        # bottom left cooldown bar
+        draw_cooldown_bar(screen,
+                x=10,
+                y=100,
+                width=200,
+                height=20,
+                cooldown_text="Dash Cooldown",
+                cooldown=spaceship.get_cooldown(),
+                max_cooldown=50)
+
         pygame.display.flip()
         clock.tick(FPS)
-    
+   
     return "quit"
 
 if __name__ == "__main__":

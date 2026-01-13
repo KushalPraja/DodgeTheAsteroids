@@ -20,6 +20,14 @@ class Spaceship(pygame.sprite.Sprite):
         self.acceleration = 0.1 # pix per frame^2
         self.direction = 0 # -1 for left, 1 for right, 0 for no movement
         self.terminal_velocity = 4  # max speed
+        self.dash_cooldown = 0  # frames until next dash allowed
+        # dash state for smooth dash (moves over several frames)
+        self.is_dashing = False
+        self.dash_frames_total = 12
+        self.dash_frames_remaining = 0
+        self.dash_distance = 100
+        self.dash_speed_per_frame = 0
+        self.dash_direction = 0
 
     def calculate_new_position(self, current_position, direction):
         self.velocity = min(self.velocity + self.acceleration, self.terminal_velocity)
@@ -31,30 +39,58 @@ class Spaceship(pygame.sprite.Sprite):
             new_position = current_position
         return new_position
 
+    def get_cooldown(self):
+        return self.dash_cooldown
+
     def update(self, *args):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_LEFT]:
             if self.direction != -1:
-                self.velocity = 0  # reset velocity when changing direction
+                self.velocity = 0.5  # reset velocity when changing direction
                 self.acceleration = 0.1  # reset acceleration when changing direction
             self.direction = -1
+
         elif keys[pygame.K_RIGHT]:
             if self.direction != 1:
-                self.velocity = 0  # reset velocity when changing direction
+                self.velocity = 0.5  # reset velocity when changing direction
                 self.acceleration = 0.1  # reset acceleration when changing direction
 
             self.direction = 1
         
-        if self.direction != 0:
-            if self.direction == -1:
-                new_x = self.calculate_new_position(self.pos.x, "left") 
-            else:
-                new_x = self.calculate_new_position(self.pos.x, "right")
-            self.rect.x = new_x
+        if keys[pygame.K_SPACE] and self.dash_cooldown == 0 and self.direction != 0:
+            self.is_dashing = True
+            self.dash_frames_remaining = self.dash_frames_total
+            self.dash_direction = self.direction
+            self.dash_speed_per_frame = self.dash_distance / float(self.dash_frames_total)
+            self.dash_cooldown = 50  # set cooldown frames after dash
+
+        
+        if self.dash_cooldown > 0:
+            self.dash_cooldown -= 1
+
+        if self.is_dashing:
+            # during dash, move at dash speed and skip normal acceleration
+            move_amount = self.dash_speed_per_frame * self.dash_direction
+            self.pos.x += move_amount
+            self.dash_frames_remaining -= 1
+            if self.dash_frames_remaining <= 0:
+                self.is_dashing = False
+                self.velocity = 0
+                self.acceleration = 0.1
+            self.rect.x = int(self.pos.x)
+        
         else:
-            self.velocity = 0  # reset velocity when no key is pressed
-            self.acceleration = 0.1  # reset acceleration when no key is pressed
+
+            if self.direction != 0:
+                if self.direction == -1:
+                    new_x = self.calculate_new_position(self.pos.x, "left") 
+                else:
+                    new_x = self.calculate_new_position(self.pos.x, "right")
+                self.rect.x = int(new_x)
+            else:
+                self.velocity = 0  # reset velocity when no key is pressed
+                self.acceleration = 0.1  # reset acceleration when no key is pressed
 
         #clamp within screen bounds
         if self.rect.left < 0:
@@ -65,11 +101,6 @@ class Spaceship(pygame.sprite.Sprite):
         self.pos.x = self.rect.x
         self.pos.y = self.rect.y
 # 
-        # print current velocity and position for debugging
-        # print(f"Velocity: {self.velocity}, Position X: {self.pos.x}")
-
-
-
 
         
 
