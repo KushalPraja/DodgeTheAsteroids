@@ -1,18 +1,18 @@
 import pygame
 from button import Button
-from config import load_font
+from config import load_font, SCREEN_LENGTH, SCREEN_HEIGHT
 
 def draw_start_screen(screen):
     screen.fill((0, 0, 0))
     font = load_font(48)
     title_surface = font.render("Dodge the Asteroids!", True, (255, 255, 255))
-    title_rect = title_surface.get_rect(center=(400, 150))
+    title_rect = title_surface.get_rect(center=(SCREEN_LENGTH//2, 150))
     screen.blit(title_surface, title_rect)
 
     button_font = load_font(20)
     start_button = Button(
-        x=300,
-        y=300,
+        x=SCREEN_LENGTH//2 - 100,
+        y=SCREEN_HEIGHT//2,
         width=200,
         height=80,
         onclickfunction=None,

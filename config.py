@@ -1,7 +1,7 @@
 import pygame
 
-SCREEN_LENGTH = 800
-SCREEN_HEIGHT = 600
+SCREEN_LENGTH = 1920
+SCREEN_HEIGHT = 1080
 FPS = 60
 
 FONT_PATH = "fonts/Comfortaa-Medium.ttf"
