@@ -44,19 +44,23 @@ class Spaceship(pygame.sprite.Sprite):
 
     def update(self, *args):
         keys = pygame.key.get_pressed()
+        mouse_pos = pygame.mouse.get_pos()
 
-        if keys[pygame.K_LEFT]:
+        if mouse_pos[0] < self.rect.centerx:
             if self.direction != -1:
                 self.velocity = 0.5  # reset velocity when changing direction
                 self.acceleration = 0.1  # reset acceleration when changing direction
             self.direction = -1
 
-        elif keys[pygame.K_RIGHT]:
+
+        elif mouse_pos[0] > self.rect.centerx:
             if self.direction != 1:
                 self.velocity = 0.5  # reset velocity when changing direction
                 self.acceleration = 0.1  # reset acceleration when changing direction
-
             self.direction = 1
+
+        else:
+            self.direction = 0
         
         if keys[pygame.K_SPACE] and self.dash_cooldown == 0 and self.direction != 0:
             self.is_dashing = True
